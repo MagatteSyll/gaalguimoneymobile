@@ -7,7 +7,7 @@ import 'dart:convert' as convert;
 
 class HistoriqueOneDepot extends StatefulWidget {
   final dynamic id;
-  HistoriqueOneDepot(@required this.id);
+  const HistoriqueOneDepot(this.id,{ Key? key }) : super(key: key);
 
   @override
   State<HistoriqueOneDepot> createState() => _HistoriqueOneDepotState();
@@ -16,7 +16,8 @@ class HistoriqueOneDepot extends StatefulWidget {
 class _HistoriqueOneDepotState extends State<HistoriqueOneDepot> {
   var httpIns=HttpInstance();
    bool load=false;
-  var trans=new MyTransaction();
+  // ignore: prefer_typing_uninitialized_variables
+  var trans;
 
  Future getrecu() async{
     var id=convert.jsonEncode(widget.id);
@@ -30,14 +31,12 @@ class _HistoriqueOneDepotState extends State<HistoriqueOneDepot> {
   else {
    return;
  }}
+ @override
  void initState(){
    getrecu().then((res) => 
     setState(()=>{
-    trans.montant=res['montant'],
-    trans.message=res['message'],
-    trans.nature=res['nature_transaction'],
-    trans.date=res['created'],
-    trans.code=res['code'],
+    
+    trans=res,
     load=true
     })
     );
@@ -50,48 +49,48 @@ class _HistoriqueOneDepotState extends State<HistoriqueOneDepot> {
      return  Scaffold(
     appBar:AppBar(
      elevation: 0.1,
-      backgroundColor: Color.fromRGBO(34, 139, 34, 1.0),
-      title:ListTileTitle(trans.nature, trans.montant,context)
+      backgroundColor: const Color.fromRGBO(34, 139, 34, 1.0),
+      title:listTileTitle(trans['nature_transaction'],trans['montant'],context)
        ) ,
     body: Container(
-    margin: EdgeInsets.only(top: 30),
+    margin: const EdgeInsets.only(top: 30),
      child: Column(children: [  
-      Center(
+      const Center(
         child: Text(
         'Transaction GaalguiMoney',
-        style: TextStyle(fontWeight: FontWeight.bold,)
+        style: TextStyle(fontWeight: FontWeight.bold,fontSize: 20)
         ),
       ),
-    SizedBox(height:15,),
+    const SizedBox(height:15,),
     Container(
-      margin: EdgeInsets.only(left: 5),
+      margin: const EdgeInsets.only(left: 5),
       child: Row(children: [
-        Text("Nature de la transaction ",style: TextStyle(fontSize:16)),
-        Text(trans.nature,style: TextStyle(fontWeight: FontWeight.bold,fontSize:16))
+        const Text("Nature de la transaction ",style: TextStyle(fontSize:18)),
+        Text(trans['nature_transaction'],style: const TextStyle(fontWeight: FontWeight.bold,fontSize:16))
       ]),
     ),
-    SizedBox(height:10,),
+    const SizedBox(height:10,),
      Container(
-      margin: EdgeInsets.only(left: 5),
+      margin: const EdgeInsets.only(left: 5),
       child: Row(children: [
-        Text("Effectue le  ",style: TextStyle(fontSize:16)),
-       Text(TimeConvert.getime(trans.date)+" ,"+" "+ TimeConvert.getheure(trans.date),
-       style: TextStyle(fontWeight: FontWeight.bold,fontSize:16))
+        const Text("Effectue le  ",style: TextStyle(fontSize:18)),
+       Text(TimeConvert.getime(trans['created'])+" ,"+" "+ TimeConvert.getheure(trans['created']),
+       style: const TextStyle(fontWeight: FontWeight.bold,fontSize:16))
       ]),
     ),
-    SizedBox(height:10,),
-    SizedBox(height:10,),
+    const SizedBox(height:10,),
+    const SizedBox(height:10,),
      Container(
-      margin: EdgeInsets.only(left: 5),
+      margin: const EdgeInsets.only(left: 5),
       child: Row(children: [
-        Text("Montant depose ",style: TextStyle(fontSize:16)),
-        Text(trans.montant +" "+ "CFA",style: TextStyle(fontWeight: FontWeight.bold,fontSize:16))
+        const Text("Montant déposé ",style: TextStyle(fontSize:18)),
+        Text(trans['montant'] +" "+ "CFA",style: const TextStyle(fontWeight: FontWeight.bold,fontSize:16))
       ]),
     ),
-    SizedBox(height:100,), 
+    const SizedBox(height:100,), 
     Container(
-      margin: EdgeInsets.only(left: 100),
-      child: Card(child: Text('signature')),
+      margin: const EdgeInsets.only(left: 100),
+      child: const Card(child: Text('signature')),
     )
      ]),
     ),

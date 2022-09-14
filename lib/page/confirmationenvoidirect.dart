@@ -6,19 +6,14 @@ import 'package:gaalguimoney/page/souscomponent/animationload.dart';
 class ConfirmationDirect extends StatefulWidget {
  // const ConfirmationDirect({ Key? key }) : super(key: key);
  final dynamic id;
- ConfirmationDirect(@required this.id);
+ const ConfirmationDirect(this.id, {super.key});
   @override
   State<ConfirmationDirect> createState() => _ConfirmationDirectState();
 }
 
 class _ConfirmationDirectState extends State<ConfirmationDirect> {
   var httpIns=HttpInstance();
-   late var  prenom;
-   late var nom;
-   late var somme;
-   late var phone;
-   late var commission;
-   late var total;
+   late var data;
    bool load=false;
 
 
@@ -32,11 +27,11 @@ class _ConfirmationDirectState extends State<ConfirmationDirect> {
     return jsonResponse;
   }
   else {
-   print(response.body);
+   return;
  }
   }
 
-Future confirmation() async{
+Future confirmation(context) async{
   var id=convert.jsonEncode(widget.id);
   var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/envoyerdirect/envoyerdirectement/',);
    var response=await  httpIns.put(url,body: {'id':id});
@@ -66,12 +61,7 @@ Future annulation(context) async{
   void initState() {
     getransaction().then((res) => {
       setState(()=>{
-        prenom=res['receveur']['prenom'],
-        nom=res['receveur']['nom'],
-        somme=res['transaction']['somme'],
-        phone=res['receveur']['phone'],
-        commission=res['transaction']['commission'],
-        total=res['transaction']['total'],
+        data=res,
         load=true
       })
     });
@@ -83,68 +73,71 @@ Future annulation(context) async{
     if(load){
    return   Scaffold(
      appBar: AppBar(
-       title: Text("Confirmation de l envoi"), 
-       backgroundColor: Colors.green,
+       title: const Text("Confirmation de l envoi"), 
+       backgroundColor:const  Color.fromRGBO(75, 0, 130, 1),
        leading: IconButton(onPressed: (){
         annulation(context);
-       }, icon:Icon(Icons.arrow_back_ios_new)),
+       }, icon:const Icon(Icons.arrow_back_ios_new)),
       ),
       body:SingleChildScrollView(child: Container(
-      margin:EdgeInsets.only(top: 20,right: 10,left:10) ,
+      margin: const EdgeInsets.only(top: 20,right: 10,left:10) ,
       child:Column(children: [
         ListTile(
-          title: Text('logo'),
+          leading: Image.asset('assets/logo.jpg'
+        ,scale:0.1,
+        height: 50,
+        width: 70,),
         ),
-        SizedBox(height: 15,),
-        Center(child: Text("Informations ",
-        style: const TextStyle(fontSize: 18,fontWeight: FontWeight.bold,)),
+      const   SizedBox(height: 15,),
+       const Center(child: Text("Informations ",
+        style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold,)),
         ),
-        SizedBox(height: 15,),
+      const  SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Beneficiaire',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(prenom +" "+  nom,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+        const  Text('Beneficiaire',style:  TextStyle(fontSize: 18)),
+       const   SizedBox(width: 10,),
+          Text(data['receveur']['prenom'] +" "+  data['receveur']['nom'],style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-    SizedBox(height: 15,),
+   const  SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Tel du beneficiaire',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(phone,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+        const  Text('Tel du beneficiaire',style:  TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['receveur']['phone'],style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-     SizedBox(height: 15,),
+    const  SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Montant a envoyer',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(somme,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+         const Text('Montant à envoyer',style:  TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['transaction']['somme']+" CFA",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-     SizedBox(height: 15,),
+    const  SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Commission',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(commission+ " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+        const   Text('Commission',style:  TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['transaction']['commission']+ " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-     SizedBox(height: 15,),
+     const  SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Total de la transaction',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(total+ " "+ 'CFA' ,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+        const  Text('Total de la transaction',style:  TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['transaction']['total']+ " "+ 'CFA' ,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-      SizedBox(height: 15,),
+     const SizedBox(height: 15,),
       SizedBox(
         width: double.infinity,
         child: ElevatedButton(
            style: ButtonStyle(
-           backgroundColor: MaterialStateProperty.all(Colors.green),
+           backgroundColor: MaterialStateProperty.all(const  Color.fromRGBO(75, 0, 130, 1),),
            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
            RoundedRectangleBorder(
            borderRadius: BorderRadius.circular(100.0),
@@ -152,9 +145,10 @@ Future annulation(context) async{
      )
   )
 ),
-          child: 
-        Text('Confirmer'),
-        onPressed: confirmation,),
+          child: const Text('Confirmer'),
+        onPressed: (){
+          confirmation(context);
+        }),
       )
     
       ]) ,

@@ -10,15 +10,17 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 
-class Historique extends StatefulWidget {
-  const Historique({ Key? key }) : super(key: key);
+
+
+class NotificationUser extends StatefulWidget {
+  const NotificationUser({super.key});
 
   @override
-  State<Historique> createState() => _HistoriqueState();
+  State<NotificationUser> createState() => _NotificationUserState();
 }
 
-class _HistoriqueState extends State<Historique> {
- List<Map<String, dynamic>> histo=[] ;
+class _NotificationUserState extends State<NotificationUser> {
+ List<Map<String, dynamic>> notif=[] ;
  var httpIns=HttpInstance();
   ScrollController scrollController=ScrollController();
  bool load=false;
@@ -32,14 +34,14 @@ class _HistoriqueState extends State<Historique> {
     setState(() {
       load=true;
     });
- var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/message/',);
+ var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/getnotification/',);
  var response=await  httpIns.get(url);
  if(response.statusCode==200){
   //print(response.body); 
   var jsonResponse = convert.jsonDecode(response.body) as Map<String, dynamic> ;
    setState(() {
   for(var i=0;i<jsonResponse['results'].length;i++){
-     histo.add(jsonResponse['results'][i]);
+     notif.add(jsonResponse['results'][i]);
       }
     next=jsonResponse['next'];
      page++;
@@ -53,7 +55,7 @@ class _HistoriqueState extends State<Historique> {
     showTopSnackBar(
       context,
       const CustomSnackBar.error(
-      message:"Requete refusee!",),
+      message:"Requete refusée!",),
      //  persistent: true,
         );
  }
@@ -63,14 +65,14 @@ class _HistoriqueState extends State<Historique> {
   setState(() {
   load=true;
     });
-   var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/message/?page=$page',);
+   var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/getnotification/?page=$page',);
  var response=await  httpIns.get(url);
  if(response.statusCode==200){
   //print(response.body); 
   var jsonResponse = convert.jsonDecode(response.body) as Map<String, dynamic> ;
    setState(() {
   for(var i=0;i<jsonResponse['results'].length;i++){
-     histo.add(jsonResponse['results'][i]);
+     notif.add(jsonResponse['results'][i]);
       }
     next=jsonResponse['next'];
      page++;
@@ -101,45 +103,52 @@ class _HistoriqueState extends State<Historique> {
 
   @override
   Widget build(BuildContext context) {
-    if(loaded==true){
-      if(histo.isNotEmpty){
-       return Scaffold(
-         body: Container(
+    return loaded? Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 4,
+        automaticallyImplyLeading: false,
+        leading: IconButton(icon:const Icon(Icons.arrow_back_ios,color: Colors.black,),
+        onPressed: () {
+          Navigator.of(context).pop();
+        },
+        ), 
+        title: const Text("Notifications",style: TextStyle(
+          color: Colors.black
+        ),),),
+        body: Container(
            margin: const  EdgeInsets.only(top: 15,left:15),
          child: Stack(
-           children: [
-             ListView.builder(
-             controller: scrollController,  
-        scrollDirection: Axis.vertical,
-        itemCount: histo.length,
-             itemBuilder: (context, index) {
-      final item = histo[index];
-      handleTap(){
-  if(histo[index]['nature_transaction']=="envoi direct"){
-    Navigator.of(context).pushNamed('/historiqueonedirect',arguments:histo[index]['id']);
-   }
-  if(histo[index]['nature_transaction']=="envoi via code"){
-  Navigator.of(context).pushNamed('/historiqueonecode',arguments:histo[index]['id']);
-  }
- if(histo[index]['nature_transaction']=="depot"){
- Navigator.of(context).pushNamed('/historiqueonedepot',arguments:histo[index]['id']);
- }
- if(histo[index]['nature_transaction']=="retrait"){
-Navigator.of(context).pushNamed('/historiqueoneretrait',arguments:histo[index]['id']);
- }
- if(histo[index]['nature_transaction']=="reception"){
-  Navigator.of(context).pushNamed('/historiqueonereception',arguments:histo[index]['id']);
- }
- if(histo[index]['nature_transaction']=="payement"){
-  Navigator.of(context).pushNamed('/historiqueonepayement',arguments:histo[index]['id']); 
- }
- if(histo[index]['nature_transaction']=="annulation commande"){
- Navigator.of(context).pushNamed('/annulationcommandegaalguishop',arguments:histo[index]['id']); 
-}
-if(histo[index]['nature_transaction']=="activation compte"){
- 
-}
-}
+         children: [
+            ListView.builder(
+            controller: scrollController,  
+            scrollDirection: Axis.vertical,
+            itemCount: notif.length,
+            itemBuilder: (context, index) {
+            final item = notif[index];
+            handleTap(){
+          if(notif[index]['nature_transaction']=="depot"){
+          Navigator.of(context).pushNamed('/historiqueonedepot',arguments:notif[index]['id']);
+            }
+            if(notif[index]['nature_transaction']=="retrait"){
+            Navigator.of(context).pushNamed('/historiqueoneretrait',arguments:notif[index]['id']);
+            }
+            if(notif[index]['nature_transaction']=="reception"){
+            Navigator.of(context).pushNamed('/historiqueonereception',arguments:notif[index]['id']);
+            }
+            if(notif[index]['nature_transaction']=="payement"){
+            Navigator.of(context).pushNamed('/historiqueonepayement',arguments:notif[index]['id']); 
+            }
+            if(notif[index]['nature_transaction']=="annulation commande"){
+            Navigator.of(context).pushNamed('/annulationcommandegaalguishop',arguments:notif[index]['id']); 
+            }
+            if(notif[index]['nature_transaction']=="activation compte"){
+
+            }
+            if(notif[index]['nature_transaction']=="code"){
+              
+            }
+            }
     return Card(
       shadowColor: Colors.grey,
       elevation: 8.0,
@@ -159,20 +168,11 @@ if(histo[index]['nature_transaction']=="activation compte"){
 
            ]),
         
-         )
-    );
-     }
-     else{
-       return const Scaffold(
-         body:Center(child: Text(" Oups vous n avez  effectue aucune transaction")),
-       );
-     }
-   }
-  else{
-   return HistoriqueAnimate();
+         ),
+    ): const AnimatedLoad();
   }
-   }
 }
+
 
 Widget listTileMessage(item,handleTap){
     String date=item['created'];
@@ -203,8 +203,6 @@ Widget listTileMessage(item,handleTap){
         onTap:handleTap
             
           );
-            
-
 }
 
 class Produitloadanimate extends StatelessWidget {
@@ -240,3 +238,4 @@ class Loadinganimate extends StatelessWidget {
   }
 }
 
+  

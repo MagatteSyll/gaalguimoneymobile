@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers, prefer_typing_uninitialized_variables
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:gaalguimoney/page/souscomponent/animationload.dart';
@@ -11,6 +13,7 @@ import './souscomponent//transaction.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
+import 'package:badges/badges.dart';
 
 
 
@@ -18,6 +21,8 @@ import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 
 class Accueil extends StatefulWidget {
+  const Accueil({super.key});
+
   //const Accueil({ Key? key }) : super(key: key);
 
   @override
@@ -35,7 +40,9 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin {
    var prenom="";
    var nom="";
    var solde="";
-   
+   var phone;
+   var badge=0;
+   var qrcode;
   
 
  var httpIns=HttpInstance();
@@ -47,7 +54,7 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin {
     });
   }
   deconnexion() async{
-  await platform.invokeMethod("deconnexion");
+  await platform.invokeMethod("simpledeconnexion");
 }
 
 
@@ -58,6 +65,20 @@ Future getuser() async{
  if(result.statusCode==200){
    var response=convert.jsonDecode(result.body);
    return response;
+ }
+ else{
+  
+ }
+}
+
+Future getqrcode()async{
+   var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/getuserqrcode/',);
+  var result=await  httpIns.get(url);
+ if(result.statusCode==200){
+  var jsonResponse=convert.jsonDecode(result.body) as Map<String, dynamic> ;
+  setState(() {
+    qrcode=jsonResponse['qrcode'];
+  });
  }
  else{
   
@@ -77,10 +98,29 @@ var  jsonResponse = convert.jsonDecode(result.body);
 return jsonResponse;
  }
 }
-
+ Future getphone()async{
+  return await platform.invokeMethod('getphone');
+ }
+ Future getbadgenotif()async{
+  var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/getbadgenotif/',);
+  var result=await  httpIns.get(url);
+ if(result.statusCode==200){
+   var response=convert.jsonDecode(result.body) as Map<String, dynamic> ;
+   setState(() {
+     badge=response['badge'];
+   });
+ }
+ else{
+  
+ }
+ }
+  @override
   void initState() {
     super.initState();
- getislog().then((res) => 
+    getphone().then((value) => setState((() {
+     phone=value; 
+    })));
+   getislog().then((res) => 
     setState(()=>{
       islog=res,
       if(res==true){
@@ -93,7 +133,8 @@ return jsonResponse;
        professionnel=res['professionnel'],
        documentverif=res['document_verif'],
        loaded=true
-       }))
+       })),
+       getbadgenotif()
       }
     else{
       setState(()=>{
@@ -101,9 +142,10 @@ return jsonResponse;
       })
     }}));
   
+  
  }
 
-  payementcodebusiness() async{
+  envoiqrcode(context) async{
      try {
       final qrCode = await FlutterBarcodeScanner.scanBarcode(
         '#028A0F',
@@ -113,16 +155,19 @@ return jsonResponse;
       );
 
   if (!mounted) return;
-  var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/pay/verificationbusinesspayslug/',);
+  //print(qrCode);
+  var url=Uri.parse('http://gaalguimoney.herokuapp.com/api/client/qrcodeenvoiverification/',);
   var result=await  httpIns.post(url,body: {'slug':qrCode});
  if(result.statusCode==200){
+   print(result.body);
    var response=convert.jsonDecode(result.body);
-   Navigator.of(context).pushNamed('/payementqrcode',arguments:response['id']);
+   Navigator.of(context).pushNamed('/confirmationsommenvoidirect',arguments:response['phone']);
  }
  else{
+  print(result.statusCode);
   showTopSnackBar(
      context,
-     CustomSnackBar.error(
+     const CustomSnackBar.error(
       message:"Erreur!Payement impossible!",),
      //  persistent: true,
     );
@@ -131,7 +176,7 @@ return jsonResponse;
      on PlatformException {
      showTopSnackBar(
      context,
-     CustomSnackBar.error(
+     const CustomSnackBar.error(
       message:"Erreur!",),
      //  persistent: true,
     );
@@ -139,44 +184,59 @@ return jsonResponse;
   }
 
 
+Future handleopennotif(context)async{
+ if(badge>0){
+  var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/usereadnotif/',);
+  var result=await  httpIns.get(url,);
+ if(result.statusCode==200){
+    await getbadgenotif();
+   Navigator.of(context).pushNamed('/notification',);
+ }
+ }
+ else{
+ Navigator.of(context).pushNamed('/notification',);
+ }
+}
 
   @override
   Widget build(BuildContext context) {
    
    if(loaded){
-     return MyAccueilWidget(islog, context, _selectedIndex, _onItemTapped,prenom,nom,solde,
-     business,professionnel,payementcodebusiness,documentverif);
+     return myAccueilWidget(islog, context, _selectedIndex, _onItemTapped,prenom,nom,solde,
+     business,professionnel,documentverif,phone,badge,handleopennotif,envoiqrcode);
    }
   else{
-    return AnimatedLoad();
+    return const  AnimatedLoad();
   }
 }}
 
-Widget MyAccueilWidget(islog, context, _selectedIndex, _onItemTapped,prenom,nom,solde,
-     business,professionnel,payementcodebusiness,documentverif){
+Widget myAccueilWidget(islog, context, _selectedIndex, _onItemTapped,prenom,nom,solde,
+     business,professionnel,documentverif,phone,badge,handleopennotif,envoiqrcode){
   final List<Widget>_tabcomponent=[
-    MyBodyWidget(prenom,nom,solde,context,documentverif),
-    MyTransactionWidget(context,payementcodebusiness),
-    Historique(),
-    Parametre(), 
+    myBodyWidget(prenom,nom,solde,context,documentverif),
+    myTransactionWidget(context,envoiqrcode),
+    const Historique(),
+   const Parametre(), 
   ];
   if(islog==true){
       return  Scaffold(
        appBar: AppBar(
-     backgroundColor: Color.fromARGB(102, 248, 15, 190),
+     backgroundColor:const Color.fromRGBO(255, 255, 255,1),
      elevation: 0,
      automaticallyImplyLeading: false,
        title: ListTile(
-      leading: Icon(
+      leading: const Icon(
       Icons.search,
-       color: Colors.white,
+       color: Colors.black,
       size: 28,
-   ), title: TextField(
+   ), title: const  TextField(
      decoration: InputDecoration(labelText: "Recherche",
-      border: InputBorder.none,),
+      border: InputBorder.none,
      
+  ),
+  style: TextStyle(color: Colors.black),
    ),
-  trailing:MyTrailing(context,business,professionnel),
+  trailing:MyTrailing(context,business,professionnel,badge,handleopennotif),
       ),),
        body:_tabcomponent[_selectedIndex],
        bottomNavigationBar: BottomNavigationBar(
@@ -202,25 +262,32 @@ Widget MyAccueilWidget(islog, context, _selectedIndex, _onItemTapped,prenom,nom,
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor:const Color.fromRGBO(75, 0, 130, 1),
         onTap: _onItemTapped,
       ),
     );
     } 
     else{
      Future.delayed(Duration.zero,(){
-      Navigator.of(context).pushNamed('/connexion');
+     if(phone=="pas de phone"){
+      Navigator.of(context).pushNamedAndRemoveUntil('/connexion', (Route route) => false);
+     }
+   else{
+  Navigator.of(context).pushNamedAndRemoveUntil('/simplelogin', (Route route) => false);
+     }
+     
      }) ;
       return Container();
     }
 }
 
 
-Widget MyTrailing(context,business,professionnel){
-  if(business){
+// ignore: non_constant_identifier_names
+Widget MyTrailing(context,business,professionnel,badge,handleopennotif){
+ /* if(business){
      return  IconButton(
    icon: const Icon(Icons.notifications),
-    color: Colors.white,
+    color: Colors.black,
     onPressed: () {
     Navigator.of(context).pushNamed('/notificationbusiness');
     },
@@ -229,18 +296,30 @@ Widget MyTrailing(context,business,professionnel){
   if(professionnel){
     return  IconButton(
    icon: const Icon(Icons.notifications),
-    color: Colors.white,
+    color: Colors.black,
     onPressed: () {
     Navigator.of(context).pushNamed('/notificationprofessionnel');
     },
      );}
-  else{
-    return IconButton(
-    onPressed: (){}, 
-    icon:Icon(Icons.luggage),
-    color: Colors.white,
+  else{*/
+    return  badge==0?IconButton(
+    onPressed: (){
+      handleopennotif(context);
+    }, 
+    icon:const Icon(Icons.notifications),
+    color: Colors.black,
     
-    );
+    ):GestureDetector(
+        onTap: (){ 
+        handleopennotif(context);
+        },
+        child: Badge(
+          elevation: 0,
+          alignment: Alignment.topLeft,
+          badgeContent: Text('$badge',style: const TextStyle(color:Colors.white)),
+          child: const  Icon(Icons.notifications,color: Colors.black,size: 30,),
+           )
+      );
   }
-}
+
 

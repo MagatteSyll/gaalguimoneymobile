@@ -30,7 +30,7 @@ static getheure(date){
 
 }
 
-Widget ListTileTitle(nature,somme,context){
+Widget listTileTitle(nature,somme,context){
   return ListTile(
    // leading: Icon(Icons.check,size: 30,color: Colors.white),
     title: Container(
@@ -38,15 +38,14 @@ Widget ListTileTitle(nature,somme,context){
       child:Column(children: [
       Row(
         children: [
-       Icon(Icons.check,color: Colors.white,),
-       
-    Text(nature,
-    style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
+      const Icon(Icons.done_all,color: Colors.white,),
+       Text(nature,
+    style:const TextStyle(fontWeight: FontWeight.bold,color: Colors.white),),
         ],
       ),
     Center(
       child: Text(somme +" "+ "CFA",
-      style: TextStyle(fontWeight: FontWeight.bold,color:Colors.white),
+      style:const TextStyle(fontWeight: FontWeight.bold,color:Colors.white),
     
       ),
     )

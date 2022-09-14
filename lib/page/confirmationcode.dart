@@ -4,9 +4,9 @@ import 'dart:convert' as convert;
 import 'package:gaalguimoney/page/souscomponent/animationload.dart';
 
 class ConfirmationCode extends StatefulWidget {
-  //const ConfirmationCode({ Key? key }) : super(key: key);
+  const ConfirmationCode(this.id,{ Key? key }) : super(key: key);
   final dynamic id;
-  ConfirmationCode(@required this.id);
+  
 
   @override
   State<ConfirmationCode> createState() => _ConfirmationCodeState();
@@ -15,13 +15,7 @@ class ConfirmationCode extends StatefulWidget {
 
 class _ConfirmationCodeState extends State<ConfirmationCode> {
   var httpIns=HttpInstance();
-   late var nature;
-   late var beneficiare;
-   late var telbeneficiare;
-   late var commission;
-   late var montant;
-   late var total;
-   late var date;
+   late var data;
    bool load=false;
    Future getransaction()async{
   var id=convert.jsonEncode(widget.id);
@@ -33,11 +27,11 @@ class _ConfirmationCodeState extends State<ConfirmationCode> {
     return jsonResponse;
   }
   else {
-   print(response.body);
+    return;
  }
   }
 
-Future confirmation() async{
+Future confirmation(context) async{
   var id=convert.jsonEncode(widget.id);
   var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/envoyercode/envoyerviacodedirectement/',);
   var response=await  httpIns.put(url,body: {'id':id});
@@ -48,19 +42,14 @@ Future confirmation() async{
     return jsonResponse;
   }
   else {
-   print(response.body);
+   return;
  }
 }
   @override
   void initState() {
     getransaction().then((res) => {
       setState(()=>{
-        beneficiare=res['nom_complet_destinataire'],
-        montant=res['somme'],
-        telbeneficiare=res['phone_destinataire'],
-        commission=res['commission'],
-        nature=res['nature_transaction'],
-        total=res['total'],
+        data=res,
         load=true
       })
     });
@@ -75,7 +64,7 @@ Future confirmation() async{
     Navigator.of(context).pop();
   }
   else {
-   print(response.body);
+   return;
  }
 
 }
@@ -84,70 +73,74 @@ Future confirmation() async{
      if(load){
    return  Scaffold(
        appBar: AppBar(
-       title: Text("Confirmation de l envoi "), 
-       backgroundColor: Colors.green,
+       title:const Text("Confirmation de l envoi "), 
+       backgroundColor:const  Color.fromRGBO(75, 0, 130, 1),
        leading: IconButton(onPressed: (){
         annulation(context);
-       }, icon:Icon(Icons.arrow_back_ios_new)),
+       }, icon: const Icon(Icons.arrow_back_ios_new)),
       ),
       body:SingleChildScrollView(child: Container(
-      padding: EdgeInsets.all(5),
-      margin:EdgeInsets.only(top:20,right: 5,left:5) ,
+      padding:const EdgeInsets.all(5),
+      margin: const EdgeInsets.only(top:20,right: 5,left:5) ,
       child:Column(children: [
       ListTile(
-        title: Text('logo'),
+        leading:Image.asset('assets/logo.jpg',scale:0.1,
+        height: 50,
+        width: 70,)
       ),
-      SizedBox(height: 20,),
+     const SizedBox(height: 20,),
       Center(
         child: Row(children: [
-          Text('Beneficiaire',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(beneficiare,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+        const  Text('Beneficiaire',style: TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['nom_complet_destinataire'],style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-    SizedBox(height: 15,),
+   const SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Tel du beneficiaire',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(telbeneficiare,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+         const Text('Tel du beneficiaire',style:  TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['phone_destinataire'],style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-     SizedBox(height: 15,),
+    const SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Montant a envoyer',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(montant + " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+        const  Text('Montant a envoyer',style:  TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['somme'] + " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-     SizedBox(height: 15,),
+   const  SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Commission',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(commission+ " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+        const  Text('Commission',style:  TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['commission']+ " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-     SizedBox(height: 15,),
+    const SizedBox(height: 15,),
       Center(
         child: Row(children: [
-          Text('Total de la transaction',style: const TextStyle(fontSize: 18)),
-          SizedBox(width: 10,),
-          Text(total+ " "+ 'CFA' ,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
+        const  Text('Total de la transaction',style:  TextStyle(fontSize: 18)),
+        const  SizedBox(width: 10,),
+          Text(data['total']+ " "+ 'CFA' ,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 18) )
         ]),
       ),
-      SizedBox(height: 15,),
+     const SizedBox(height: 15,),
       SizedBox(
         width: double.infinity,
         child: ElevatedButton(
           style: ButtonStyle(
-           backgroundColor: MaterialStateProperty.all(Colors.green),
+           backgroundColor: MaterialStateProperty.all(const Color.fromRGBO(75, 0, 130, 1)),
            shape: MaterialStateProperty.all<RoundedRectangleBorder>(
            RoundedRectangleBorder(
            borderRadius: BorderRadius.circular(100.0), ))),
-          child: Text('Confirmer'),
-        onPressed: confirmation,),
+        onPressed:(){
+          confirmation(context);
+        } ,
+          child: const Text('Confirmer'),),
       )
     
       ]) ,

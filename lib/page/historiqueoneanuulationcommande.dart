@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 
 class AnnulationCommandeGaalguiShop extends StatefulWidget {
   final dynamic id;
-  AnnulationCommandeGaalguiShop(@required this.id);
+ const AnnulationCommandeGaalguiShop(this.id,{ Key? key }) : super(key: key);
 
   @override
   State<AnnulationCommandeGaalguiShop> createState() => _AnnulationCommandeGaalguiShopState();

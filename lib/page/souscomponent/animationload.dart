@@ -9,8 +9,8 @@ class AnimatedLoad extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-     decoration: BoxDecoration(color: Colors.white),
-     child: SpinKitSquareCircle(
+     decoration:const BoxDecoration(color: Colors.white),
+     child:const SpinKitSquareCircle(
      color: Colors.purple,
      size: 250.0,
      duration: Duration(milliseconds: 1000),
@@ -20,11 +20,12 @@ class AnimatedLoad extends StatelessWidget {
   }
 }
 
+// ignore: non_constant_identifier_names
 Widget EnvoiAnimate(){
   return Container(
-     decoration: BoxDecoration(color: Colors.white),
-     child: SpinKitPouringHourGlass(
-     color: Colors.yellow,
+     decoration:const BoxDecoration(color: Colors.white),
+     child: const SpinKitPouringHourGlass(
+     color: Colors.red,
      size: 250.0,
      duration: Duration(milliseconds: 1000),
 )
@@ -33,8 +34,8 @@ Widget EnvoiAnimate(){
 
 Widget HistoriqueAnimate(){
   return Container(
-     decoration: BoxDecoration(color: Colors.white),
-     child: Center(
+     decoration:const BoxDecoration(color: Colors.white),
+     child:const Center(
        child: SpinKitFadingGrid(
        color: Colors.green,
        size: 100.0,
@@ -47,8 +48,8 @@ Widget HistoriqueAnimate(){
 
 Widget ConfirmationPhoneAnimate(){
    return Container(
-     decoration: BoxDecoration(color: Colors.white),
-     child: Center(
+     decoration:const BoxDecoration(color: Colors.white),
+     child:const Center(
        child: SpinKitFoldingCube(
        color: Colors.blue,
        size: 100.0,

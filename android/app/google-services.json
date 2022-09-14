@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "586924479700",
+    "project_id": "gaalguimoney",
+    "storage_bucket": "gaalguimoney.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:586924479700:android:8cbd6ce85fa062b8241741",
+        "android_client_info": {
+          "package_name": "com.example.gaalguimoney"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "586924479700-l9mctnec8qj6ju3s990656fs43ghls3k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHzhfejYwYGSHFOHeTff9gcqI-DQl2EE8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "586924479700-l9mctnec8qj6ju3s990656fs43ghls3k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../apiservice.dart';
 
 
 
-Widget MyBodyWidget(prenom,nom,solde,context,documentverif){
+
+Widget myBodyWidget(prenom,nom,solde,context,documentverif){
+ 
   return SingleChildScrollView(
     child: Wrap(
        // direction: Axis.horizontal,
@@ -18,76 +19,76 @@ Widget MyBodyWidget(prenom,nom,solde,context,documentverif){
               scrollDirection: Axis.horizontal,
                children: [
                  Container(
-                   margin:EdgeInsets.all(20),
+                   margin:const EdgeInsets.all(20),
                    width: 200,
                   // height: 00,
                    child: Card(
                      child: Container(
-                       padding:EdgeInsets.all(5) ,
+                       padding:const EdgeInsets.all(5) ,
                        child: Column(children: [
-                        FittedBox(
+                        const FittedBox(
                         fit: BoxFit.contain,
                         child: Text("Compte",
                         style: TextStyle(color: Color.fromARGB(255, 8, 42, 233),
                           fontWeight: FontWeight.bold)),
                         ),
-                        SizedBox(height: 15,),
+                        const SizedBox(height: 15,),
                         Row
                         (children:[
-                          Icon(Icons.person_rounded),
-                          SizedBox(width: 5,),
+                          const Icon(Icons.account_circle),
+                          const SizedBox(width: 5,),
                           Text(prenom+" "+ nom),
                         ]),
-                        SizedBox(height: 15,),
+                        const SizedBox(height: 15,),
                         Row(children: [
-                         Text("solde"),
-                         SizedBox(width: 5,),
+                         const Text("solde"),
+                         const SizedBox(width: 5,),
                          Text(solde,
-                          style: TextStyle(color: Color.fromARGB(255, 218, 7, 147),
+                          style: const TextStyle(color: Color.fromARGB(255, 218, 7, 147),
                           fontWeight: FontWeight.bold)
                          ),
-                         SizedBox(width: 5,),
-                          Text("CFA")
+                         const SizedBox(width: 5,),
+                          const Text("CFA")
                         ],),
                        ]),
                      ),
                    ),
                  ),
                  Container(
-                   margin:EdgeInsets.all(20),
+                   margin:const EdgeInsets.all(20),
                    width: 200,
                   // height: 100,
                    child: Card(
                      child: Container(
-                       padding: EdgeInsets.all(15),
+                       padding: const EdgeInsets.all(15),
                        child: Column(children: [
-                           FittedBox(
+                           const FittedBox(
                         fit: BoxFit.contain,
                         child: Text("Taux d echange en CFA",
                         style: TextStyle(color: Color.fromARGB(255, 8, 42, 233),
                           fontWeight: FontWeight.bold)
                         ),),
-                        SizedBox(height: 15,),
+                        const SizedBox(height: 15,),
                         Row(
-                        children: [
+                        children:const [
                         Text('Dollar',),
                         SizedBox(width: 5,),
                         Text("450", style: TextStyle(color: Color.fromARGB(255, 223, 9, 9),
                           fontWeight: FontWeight.bold))
                           ],
                         ),
-                       SizedBox(height: 15,),
+                       const SizedBox(height: 15,),
                         Row(
-                        children: [
+                        children: const [
                         Text('Euro',),
                         SizedBox(width: 5,),
                         Text("650", style: TextStyle(color: Color.fromARGB(255, 223, 9, 9),
                           fontWeight: FontWeight.bold))
                         ],
                         ),
-                       SizedBox(height: 15,),
+                       const SizedBox(height: 15,),
                         Row(
-                        children: [
+                        children: const [
                         Text('Naira',),
                         SizedBox(width: 5,),
                         Text("1.48", style: TextStyle(color: Color.fromARGB(255, 223, 9, 9),
@@ -102,14 +103,14 @@ Widget MyBodyWidget(prenom,nom,solde,context,documentverif){
              )),
            ],
          ),
-         SizedBox(height: 20.0),
+         const SizedBox(height: 20.0),
           Card( 
             elevation: 5, 
             child: Container(
             width: MediaQuery.of(context).size.width * 0.95,
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Column(children: [
-            Text("Nos point d acces ", style: TextStyle(color: Color.fromARGB(254,
+            const Text("Nos point d acces ", style: TextStyle(color: Color.fromARGB(254,
              90,80, 0),
            fontWeight: FontWeight.bold)),
              IconButton(onPressed: (){
@@ -118,20 +119,42 @@ Widget MyBodyWidget(prenom,nom,solde,context,documentverif){
              },
              iconSize: 36,
              color: Colors.purple,
-             icon:Icon(Icons.location_on))
+             icon:const Icon(Icons.location_on))
             ]), ),),
-         SizedBox(height: 25,),
-          FittedBox(
+         const SizedBox(height: 25,),
+         
+          Container(
+          margin:const  EdgeInsets.only(top: 20),
+         child: Column(
+         children: [
+        const ListTile
+        (title:Text("Mon qr-code",
+        style: TextStyle(color: Colors.brown),)),
+       const   SizedBox(height: 5.0), 
+         SizedBox(
+         height: 50.0,
+         width: 150.0,
+         child:  IconButton(
+        color:   Colors.green,
+         padding: const  EdgeInsets.all(0.0),
+        icon: const 
+         Icon(Icons.qr_code ,size: 50.0),
+       onPressed:() { 
+       Navigator.of(context).pushNamed('/qrcodeuser');
+      
+        } ,)
+  ),],),),
+   const SizedBox(height: 25,),
+    FittedBox(
            fit: BoxFit.contain,
           child: Container(
-            margin: EdgeInsets.only(top: 15,bottom: 5),
-            padding: EdgeInsets.only(left: 15),
-            child: Text("Services",
+            margin: const EdgeInsets.only(top: 15,bottom: 5),
+            padding: const EdgeInsets.only(left: 15),
+            child: const Text("Services",
             style: TextStyle(color: Color.fromARGB(255, 8, 42, 233),
             fontWeight: FontWeight.bold)
             ),
           ),),
-          SizedBox(height: 25,),
           Column(
             children: [
               Container(
@@ -141,32 +164,32 @@ Widget MyBodyWidget(prenom,nom,solde,context,documentverif){
                   children: [
                     Card(
                      child: Container(
-                       padding: EdgeInsets.all(10),
+                       padding: const EdgeInsets.all(10),
                        child: Column(children: [
-                         Text("GaalguiMoneyBusiness", style: TextStyle(color: Color.fromARGB(255, 223, 9, 9),
+                         const Text("GaalguiMoneyBusiness", style: TextStyle(color: Color.fromARGB(255, 223, 9, 9),
                           fontWeight: FontWeight.bold)),
                         IconButton(onPressed: (){
                        Navigator.of(context).pushNamed('/gaalguimoneybusiness');
                         },
                         iconSize: 36,
                         color: Colors.deepPurple,
-                        icon:Icon(Icons.money))
+                        icon:const Icon(Icons.money))
                         
                        ]),
                      ),
                    ),
                    Card(
                      child: Container(
-                       padding: EdgeInsets.all(10),
+                       padding: const EdgeInsets.all(10),
                        child: Column(children: [
-                         Text("Devenir Partenaire", style: TextStyle(color: Color.fromARGB(255, 223, 9, 9),
+                         const Text("Devenir Partenaire", style: TextStyle(color: Color.fromARGB(255, 223, 9, 9),
                           fontWeight: FontWeight.bold)),
                         IconButton(onPressed: (){
                         Navigator.of(context).pushNamed('/partenaire');
                         },
                         iconSize: 36,
                         color: Colors.green,
-                        icon:Icon(Icons.business),)
+                        icon:const Icon(Icons.business),)
                         
                        ]),
                      ),
@@ -187,12 +210,12 @@ Widget MyBodyWidget(prenom,nom,solde,context,documentverif){
 
 class Actif extends StatelessWidget {
   final dynamic actif;
-  const Actif(@required this.actif);
+  const Actif(this.actif, {super.key});
 
   @override
   Widget build(BuildContext context) {
     if(!actif){
-     return ListTile(
+     return const ListTile(
        title: Text("Rendez vous avec vos documents(piece d identite ou passport) au point d acces le plus proche pour activer votre compte",
        style: TextStyle(color: Colors.red),),
      );

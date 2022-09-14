@@ -6,7 +6,7 @@ import 'package:gaalguimoney/page/souscomponent/animationload.dart';
 
 class RecuCode extends StatefulWidget {
   final dynamic id;
-   RecuCode(@required this.id);
+  const RecuCode(this.id,{ Key? key }) : super(key: key);
 
   @override
   State<RecuCode> createState() => _RecuCodeState();
@@ -14,13 +14,9 @@ class RecuCode extends StatefulWidget {
 
 class _RecuCodeState extends State<RecuCode> {
  var httpIns=HttpInstance();
-  late var montant;
-  late var date;
-  late var beneficiaire;
-  late var commission;
-  late var code;
-  late var phone;
-  late var total;
+ 
+  // ignore: prefer_typing_uninitialized_variables
+  late var data;
   bool load=false;
 
   Future getenvoi()async{
@@ -39,13 +35,7 @@ class _RecuCodeState extends State<RecuCode> {
 void initState(){
 getenvoi().then((res) => 
  setState(()=>{
-  beneficiaire=res['Nom_complet_du_receveur'],
-  montant=res['somme'],
-  commission=res['commission'],
-  code=res['code'],
-  phone=res['phone_beneficiaire'],
-  date=res['created'],
-  //total=res['total'],
+  data=res,
   load=true
  })
 );
@@ -55,7 +45,7 @@ super.initState();
   @override
   Widget build(BuildContext context) {
     if(load){
-    final  formattedDate =DateTime.parse(date);
+    final  formattedDate =DateTime.parse(data['created']);
     final DateFormat formatter = DateFormat('dd-MM-yyyy');
     final heure=DateFormat('HH:mm');
     final String formatted = formatter.format(formattedDate);
@@ -64,89 +54,83 @@ super.initState();
         appBar: AppBar(
         backgroundColor: Colors.green,
         title: Center(child: Row(
-          children: [
-           Icon(Icons.check),
-           Text('Envoi via code ')
+          children:const  [
+           Icon(Icons.done_all),
+           Text('Transaction éffectuée')
           ],
         )),
         leading: IconButton(
-        icon: Icon(Icons.arrow_back),
+        icon:const Icon(Icons.arrow_back),
         onPressed: () {
-        Navigator.of(context).pushNamed('/');
+        Navigator.of(context).pushNamedAndRemoveUntil('/', (Route route) => false);
         }),
         ),
       body: SingleChildScrollView(child: Container(
-        padding: EdgeInsets.all(5),
-      margin:EdgeInsets.only(top: 35,right: 5,left:5) ,
+        padding:const EdgeInsets.all(5),
+      margin: const EdgeInsets.only(top: 35,right: 5,left:5) ,
        child:Column(children: [
-        Center(
+       const Center(
           child:Text('Informations sur la transaction',
-          style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)), 
+          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24)), 
         
       ),
-      SizedBox(height: 25,),
+    const  SizedBox(height: 25,),
       Center(
         child: Row(children: [
-         Text("Beneficiare",style: const TextStyle(fontSize: 18)),
-         SizedBox(width: 10,),
-         Text(beneficiaire,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
+       const  Text("Beneficiare",style:  TextStyle(fontSize: 18)),
+       const  SizedBox(width: 10,),
+        Text(data['Nom_complet_du_receveur'],style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
 
         ]),
       ),
-       SizedBox(height: 15,),
+     const  SizedBox(height: 15,),
        Center(
         child: Row(children: [
-         Text("Montant  ",style: const TextStyle(fontSize: 18)),
-         SizedBox(width: 10,),
-         Text(montant+ " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
+        const Text("Montant  ",style: TextStyle(fontSize: 18)),
+        const SizedBox(width: 10,),
+         Text(data['somme']+ " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
 
         ]),
       ),
-      SizedBox(height: 15,),
+     const SizedBox(height: 15,),
       Center(
         child: Row(children: [
-         Text("Commission ",style: const TextStyle(fontSize: 18)),
-         SizedBox(width: 10,),
-         Text(commission + " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
+        const Text("Commission ",style:  TextStyle(fontSize: 18)),
+        const SizedBox(width: 10,),
+         Text(data['commission'] + " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
          ]),
       ),
-     SizedBox(height: 15,),
+      const SizedBox(height: 15,),
       Center(
         child: Row(children: [
-         Text("code de transfert ",style: const TextStyle(fontSize: 18)),
-         SizedBox(width: 10,),
-         Text("$code",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
+        const Text("Total de la transaction ",style:  TextStyle(fontSize: 18)),
+        const SizedBox(width: 10,),
+         Text(data['total'] + " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
          ]),
       ),
-    SizedBox(height: 15,),
-    /* SizedBox(height: 15,),
+    const SizedBox(height: 15,),
       Center(
         child: Row(children: [
-         // Text('Date de l envoi',
-         // style: const TextStyle(fontSize: 18)), 
-         //  SizedBox(width: 10,),
-         // Text(date,style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24))
-         Text("total",style: const TextStyle(fontSize: 18)),
-         SizedBox(width: 10,),
-         Text(commission + " "+ 'CFA',style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
-
-        ]),
-      ),*/
-     SizedBox(height: 15,),
+        const Text("code de transfert ",style:  TextStyle(fontSize: 18)),
+       const  SizedBox(width: 10,),
+         Text("${data['code']}",style: const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
+         ]),
+      ),
+   const SizedBox(height: 15,),
       Center(
         child: Row(children: [
-         Text("Le ",style: const TextStyle(fontSize: 18)),
-         SizedBox(width: 10,),
-         Text(formatted+","+heuresting,
-            style: TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
+        const Text("Le ",style:  TextStyle(fontSize: 18)),
+        const SizedBox(width: 10,),
+         Text("$formatted,$heuresting",
+            style:const TextStyle(fontWeight: FontWeight.bold,fontSize: 24)),
 
         ]),
       ),
-     SizedBox(height: 100,),
+    const SizedBox(height: 100,),
      Container(
-       margin: EdgeInsets.only(left: 100),
+       margin:const EdgeInsets.only(left: 100),
        width: MediaQuery.of(context).size.width * 0.95,
-       child: Card(child: 
+       child:const Card(child: 
        Text('signature')),
      )
       ]

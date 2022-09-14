@@ -6,20 +6,20 @@ import 'package:top_snackbar_flutter/custom_snack_bar.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 
-class Inscription extends StatefulWidget {
-  const Inscription({ Key? key }) : super(key: key);
- 
+
+class ResetPassword extends StatefulWidget {
+  const ResetPassword({super.key});
+
   @override
-  State<Inscription> createState() => _InscriptionState();
+  State<ResetPassword> createState() => _ResetPasswordState();
 }
 
-class _InscriptionState extends State<Inscription> {
+class _ResetPasswordState extends State<ResetPassword> {
   late PhoneNumber phone;
- var httpIns= HttpInstance();
+  var httpIns= HttpInstance();
   final formKey = GlobalKey<FormState>();
-
-
-  Widget buildPhone(){
+  
+   Widget buildPhone(){
        return   InternationalPhoneNumberInput(
         validator: (value){
           if(value==null||value.trim().isEmpty){
@@ -45,13 +45,13 @@ class _InscriptionState extends State<Inscription> {
           ),
          ); }
 
-  Future handleinscription(context) async{
-    var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/getphonecode/',);
+  Future handlereset(context)async{
+     var url=Uri.parse('https://gaalguimoney.herokuapp.com/api/client/resetconfirmation/',);
     var response= await httpIns.post(url,body: {'phone':"$phone"});
     if (response.statusCode == 200) {
     var jsonResponse = convert.jsonDecode(response.body) as Map<String, dynamic>;
-     print(response.body);
-    Navigator.of(context).pushNamed('/phoneverification',arguments: jsonResponse['id']);
+    // print(response.body);
+    Navigator.of(context).pushNamed('/coderesetpassword',arguments: jsonResponse['id']);
     }
   else {
    showTopSnackBar(
@@ -61,15 +61,16 @@ class _InscriptionState extends State<Inscription> {
      //  persistent: true,
    );
    return;
- }
   }
+  }
+ 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        title:const Text("Creation de compte GaalguiMoney",style: TextStyle(
+        title:const Text("Reinitialisation de mot de passe",style: TextStyle(
           fontWeight: FontWeight.bold,color: Colors.black,fontSize: 18
         ),),
         elevation: 0,
@@ -91,15 +92,6 @@ class _InscriptionState extends State<Inscription> {
           title:const  Icon(Icons.person,color: Color.fromRGBO(75, 0, 130, 1),),
             ),
         Container(
-          child: Row(children: [
-           const SizedBox(width: 50,),
-          const   Text("Vous avez un compte?"),
-            TextButton(
-            onPressed: (){Navigator.of(context).pushNamed("/connexion");},
-            child:const  Text('se connecter'))
-            ]),
-        ),
-        Container(
         padding: const EdgeInsets.all(3.0),
         child: Form(
           key: formKey,
@@ -114,19 +106,23 @@ class _InscriptionState extends State<Inscription> {
               borderRadius: BorderRadius.circular(100.0),
                ))),
               child: const Text(
-                   'Valider',
+                   'Confirmer',
                    style: TextStyle(fontSize: 16),
                   ),
                   onPressed: () {
                     if (formKey.currentState!.validate()) {
-                      handleinscription(context);
+                      handlereset(context);
                       }}, ),
           ],)
-           )
-      )])
+           ),
+        ),
+         TextButton(child: const Text("Se connecter"),
+      onPressed: (){
+        Navigator.of(context).pushNamed('/connexion');
+      },)
+        ])
       
     )));
       
-      
   }
-}
+  }
